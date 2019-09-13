@@ -3,6 +3,7 @@ module.exports = async (page, scenario) => {
   var clickSelector = scenario.clickSelectors || scenario.clickSelector;
   var keyPressSelector = scenario.keyPressSelectors || scenario.keyPressSelector;
   var scrollToSelector = scenario.scrollToSelector;
+  var scrollIntoViewOptions = scenario.scrollIntoViewOptions;
   var postInteractionWait = scenario.postInteractionWait; // selector [str] | ms [int]
 
   if (keyPressSelector) {
@@ -32,8 +33,14 @@ module.exports = async (page, scenario) => {
 
   if (scrollToSelector) {
     await page.waitFor(scrollToSelector);
-    await page.evaluate(scrollToSelector => {
-      document.querySelector(scrollToSelector).scrollIntoView();
-    }, scrollToSelector);
+    await page.evaluate(
+      (scrollToSelector, scrollIntoViewOptions) => {
+        document
+          .querySelector(scrollToSelector)
+          .scrollIntoView(scrollIntoViewOptions);
+      },
+      scrollToSelector,
+      scrollIntoViewOptions
+    );
   }
 };
